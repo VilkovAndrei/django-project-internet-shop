@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, 'catalog/home.html')
+    return render(request, 'catalog/home.html', {'title':"Главная страница"})
 
 def contacts(request):
     if request.method == 'POST':
@@ -11,4 +11,4 @@ def contacts(request):
         message = request.POST.get('message')
         # а также передается информация, которую заполнил пользователь
         print(name, phone, message)
-    return render(request, 'catalog/contacts.html')
+    return render(request, 'catalog/contacts.html', {'title':"Контакты"})
