@@ -1,7 +1,11 @@
 from django.shortcuts import render
 
+from catalog.models import Product
+
+
 def home(request):
-    return render(request, 'catalog/home.html', {'title':"Главная страница"})
+    return render(request, 'catalog/home.html', {'title':"Главная страница",
+                  'last_products':Product.objects.order_by("-id")[0:3]})
 
 def contacts(request):
     if request.method == 'POST':
