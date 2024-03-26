@@ -1,0 +1,122 @@
+[
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2024-03-25T19:57:06.041Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "1",
+      "object_repr": "Куртка осенняя (кожа) (Куртка осенняя (кожа))",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2024-03-25T19:58:14.387Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "2",
+      "object_repr": "Кроссовки осенние (р.42)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+      "action_time": "2024-03-25T19:59:23.433Z",
+      "user": 1,
+      "content_type": 8,
+      "object_id": "3",
+      "object_repr": "Сумка дамская (Сумка дамская плетеная)",
+      "action_flag": 1,
+      "change_message": "[{\"added\": {}}]"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$720000$Hc9VAwUnwhfwvDIBK8EdBw$6YZ8qNydQfC6BTowOATeM0dwFCOuj8dvU3WjWzgTIVI=",
+      "last_login": "2024-03-25T19:53:13.388Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-03-25T18:10:21.214Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "name": "Одежда",
+      "description": "товары категории \"Одежда\""
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "name": "Обувь",
+      "description": "товары категории \"Обувь\""
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "name": "Прочее",
+      "description": "товары категории \"Прочее\""
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+      "name": "Куртка осенняя (кожа)",
+      "description": "Куртка осенняя (кожа)",
+      "image": "",
+      "category": 1,
+      "price": 4000,
+      "created_at": "2024-03-25T22:55:05Z",
+      "updated_at": "2024-03-25T19:57:00Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "name": "Кроссовки осенние",
+      "description": "р.42",
+      "image": "",
+      "category": 2,
+      "price": 1500,
+      "created_at": "2024-03-25T22:57:06Z",
+      "updated_at": "2024-03-25T19:58:08Z"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "name": "Сумка дамская",
+      "description": "Сумка дамская плетеная",
+      "image": "",
+      "category": 3,
+      "price": 2000,
+      "created_at": "2024-03-25T22:58:14Z",
+      "updated_at": "2024-03-25T19:59:19Z"
+    }
+  }
+]

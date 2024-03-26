@@ -94,3 +94,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+FILL_JSON_FILE = os.path.join(BASE_DIR, 'db.json')
