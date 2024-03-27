@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <h1 class="display-4">Контакты</h1>
+    <h1 class="display-4">Наши контакты</h1>
 </div>
 
 <div class="container">
@@ -13,16 +13,28 @@
                 <div class="card-body">
                     <table class="table table-striped">
                         <tr>
+                            <td class="w-25">Наименование</td>
+                            <td>{{ our_contact.title }}</td>
+                        </tr>
+                        <tr>
                             <td class="w-25">Страна</td>
-                            <td>РФ</td>
+                            <td>{{ our_contact.country }}</td>
                         </tr>
                         <tr>
                             <td class="w-25">ИНН</td>
-                            <td>522200000001</td>
+                            <td>{{ our_contact.inn }}</td>
                         </tr>
                         <tr>
                             <td class="w-25">Адрес</td>
-                            <td>Н.Новгород Совнаркомовская д.1</td>
+                            <td>{{ our_contact.address }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">Телефон</td>
+                            <td>{{ our_contact.phone }}</td>
+                        </tr>
+                        <tr>
+                            <td class="w-25">E-mail</td>
+                            <td>{{ our_contact.email }}</td>
                         </tr>
                     </table>
                 </div>
