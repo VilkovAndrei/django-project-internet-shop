@@ -17,3 +17,8 @@ def contacts(request):
         print(name, phone, message)
     return render(request, 'catalog/contacts.html', {'title':"Контакты",
                                                                           'our_contact':Our_contact.objects.first()})
+
+
+def product_item(request, pk):
+    return render(request, 'catalog/product_item.html', {'title':"Товар",
+                  'object':Product.objects.get(pk=pk)})

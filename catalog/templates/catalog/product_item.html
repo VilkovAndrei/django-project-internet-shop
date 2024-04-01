@@ -1,0 +1,13 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block content %}
+<div class="card" style="width: 18rem;">
+  <img src="{{ object.image|mymedia }}" class="card-img-top">
+  <div class="card-body">
+    <h5 class="card-title">{{ object.name|title }}</h5>
+    <p class="card-text">{{ object.description }}</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
+</div>
+{% endblock %}
