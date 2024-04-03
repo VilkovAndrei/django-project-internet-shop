@@ -37,8 +37,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products', verbose_name='фото', **NULLABLE)
     category = models.ForeignKey(Category, on_delete = models.PROTECT, verbose_name='категория')
     price = models.IntegerField()
-    created_at = models.DateTimeField(default=datetime.now, verbose_name='время создания')
-    updated_at = models.DateTimeField(verbose_name='время редактирования')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='время создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='время редактирования')
 
 
     def __str__(self):

@@ -2,12 +2,17 @@
 {% load my_tags %}
 
 {% block content %}
-<div class="card" style="width: 18rem;">
-  <img src="{{ object.image|mymedia }}" class="card-img-top">
-  <div class="card-body">
-    <h5 class="card-title">{{ object.name|title }}</h5>
-    <p class="card-text">{{ object.description }}</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-  </div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <div class="col-lg-12 col-md-6 col-sm-12">
+        <div class="card text-center" style="width: 24rem;">
+            <img src="{{ object.image|mymedia }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ object.name }}</h5>
+                <p class="card-text">{{ object.description }}</p>
+                <p class="card-text">{{ object.price }} руб.</p>
+                <a href="#" class="p-2 btn btn-outline-primary">В корзину</a>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
