@@ -1,10 +1,11 @@
 from django.db import models
-from datetime import datetime
+from django.shortcuts import reverse
 
 
-NULLABLE = {'blank':True, 'null':True}
+NULLABLE = {'blank': True, 'null': True}
 
-class Our_contact(models.Model):
+
+class OurContact(models.Model):
     title = models.CharField(max_length=150, verbose_name='наименование')
     country = models.CharField(max_length=100, verbose_name='страна')
     inn = models.CharField(max_length=12, verbose_name='ИНН')
@@ -18,6 +19,7 @@ class Our_contact(models.Model):
     class Meta:
         verbose_name = 'наш контакт'
         verbose_name_plural = 'наши контакты'
+
 
 class Category(models.Model):
     name = models.CharField(max_length=150, verbose_name='наименование')
@@ -35,14 +37,16 @@ class Product(models.Model):
     name = models.CharField(max_length=150, verbose_name='наименование')
     description = models.CharField(max_length=200, verbose_name='описание')
     image = models.ImageField(upload_to='products', verbose_name='фото', **NULLABLE)
-    category = models.ForeignKey(Category, on_delete = models.PROTECT, verbose_name='категория')
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, verbose_name='категория')
     price = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='время создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='время редактирования')
 
-
     def __str__(self):
         return f'{self.name} ({self.description})'
+
+    def get_absolut_url(self):
+        return reverse('catalog:product_item', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'товар'

@@ -1,8 +1,8 @@
 from django.contrib import admin
-from catalog.models import Category, Product, Our_contact
+from catalog.models import Category, Product, OurContact
 
 
-@admin.register(Our_contact)
+@admin.register(OurContact)
 class OurContactAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title', 'country', 'inn', 'address', 'phone', 'email',)
 
