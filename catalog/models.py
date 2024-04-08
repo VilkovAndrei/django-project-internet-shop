@@ -16,6 +16,9 @@ class OurContact(models.Model):
     def __str__(self):
         return f'{self.title}'
 
+    def get_absolut_url(self):
+        return reverse('catalog:contacts', kwargs={'pk': self.pk})
+
     class Meta:
         verbose_name = 'наш контакт'
         verbose_name_plural = 'наши контакты'
