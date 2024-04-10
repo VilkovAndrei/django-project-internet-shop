@@ -23,10 +23,12 @@ class ProductCreateView(CreateView):
 class ProductListView(ListView):
     model = Product
     extra_context = {'title': "Товары"}
+    paginate_by = 4
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         context_data['object_list'] = Product.objects.order_by("-id")
+        context_data['paginate_by'] = 4
         return context_data
 
 

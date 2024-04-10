@@ -49,7 +49,7 @@ class Product(models.Model):
         return f'{self.name} ({self.description})'
 
     def get_absolut_url(self):
-        return reverse('catalog:product_item', kwargs={'pk': self.pk})
+        return reverse('catalog:product_detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'товар'
