@@ -100,7 +100,8 @@ FILL_JSON_FILE = os.path.join(BASE_DIR, 'data.json')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vilkov-l-nn@yandex.ru'
 EMAIL_HOST_PASSWORD = 'fefdduxnlsgfbmyh'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -16,8 +16,10 @@ class PostCreateView(CreateView):
 class PostUpdateView(UpdateView):
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
-    success_url = reverse_lazy("blog:post_list")
     extra_context = {'title': "Редактирование записи"}
+
+    def get_success_url(self):
+        return reverse_lazy('blog:post_detail', kwargs={'pk': self.object.pk})
 
 
 class PostListView(ListView):
@@ -38,7 +40,7 @@ class PostDetailView(DetailView):
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         self.object.count_view += 1
-        if self.object.count_view == 20:
+        if self.object.count_view == 100:
             send_blog_email(self.object)
         self.object.save()
         return self.object
