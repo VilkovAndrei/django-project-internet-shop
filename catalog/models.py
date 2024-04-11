@@ -16,6 +16,9 @@ class OurContact(models.Model):
     def __str__(self):
         return f'{self.title}'
 
+    def get_absolut_url(self):
+        return reverse('catalog:contacts', kwargs={'pk': self.pk})
+
     class Meta:
         verbose_name = 'наш контакт'
         verbose_name_plural = 'наши контакты'
@@ -46,7 +49,7 @@ class Product(models.Model):
         return f'{self.name} ({self.description})'
 
     def get_absolut_url(self):
-        return reverse('catalog:product_item', kwargs={'pk': self.pk})
+        return reverse('catalog:product_detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'товар'
