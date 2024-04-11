@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView
+from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.models import Product, OurContact
 
@@ -15,6 +15,12 @@ class IndexView(TemplateView):
 
 
 class ProductCreateView(CreateView):
+    model = Product
+    fields = ('name', 'description', 'image', 'category', 'price')
+    success_url = reverse_lazy("catalog:products")
+
+
+class ProductUpdateView(UpdateView):
     model = Product
     fields = ('name', 'description', 'image', 'category', 'price')
     success_url = reverse_lazy("catalog:products")
@@ -46,3 +52,8 @@ class ContactsView(TemplateView):
         context_data = super().get_context_data(**kwargs)
         context_data['object'] = OurContact.objects.all()[0]
         return context_data
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    extra_context = {'title': "Удаление товара"}

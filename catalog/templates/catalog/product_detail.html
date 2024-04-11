@@ -9,7 +9,8 @@
                 <h5 class="card-title">{{ object.name }}</h5>
                 <p class="card-text">{{ object.description }}</p>
                 <p class="card-text">{{ object.price }} руб.</p>
-                <a href="#" class="p-2 btn btn-outline-primary">В корзину</a>
+                <a href="{% url 'catalog:product_update' object.pk %}" class="p-2 btn btn-outline-primary">Редактировать</a>
+                <a href="{% url 'catalog:product_delete' object.pk %}" class="p-2 btn btn-outline-primary">Удалить</a>
             </div>
         </div>
     </div>
