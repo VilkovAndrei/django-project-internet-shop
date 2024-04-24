@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 
 PSQL_PSW = os.getenv('PostgreSQL_PSW')
+SMTP_APP_PSW = os.getenv('YANDEX_SMTP_APP_PASS')
+MY_YANDEX_EMAIL = os.getenv('MY_YANDEX_EMAIL')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -102,8 +104,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'vilkov-l-nn@yandex.ru'
-EMAIL_HOST_PASSWORD = 'fefdduxnlsgfbmyh'
+EMAIL_HOST_USER = MY_YANDEX_EMAIL
+EMAIL_HOST_PASSWORD = SMTP_APP_PSW
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
