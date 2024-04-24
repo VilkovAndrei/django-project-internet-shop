@@ -24,13 +24,13 @@ class ProductForm(StyleMixin, forms.ModelForm):
 
         for name in self.__forbidden_words:
             if name in cleaned_data:
-                raise forms.ValidationError(f'Запрещенное слово "{name}" в имени товара')
+                raise forms.ValidationError(f'Запрещенное слово "{name}" в наименовании товара')
         return cleaned_data
 
     def clean_description(self):
         cleaned_data = self.cleaned_data.get('description')
 
-        for name in self.__forbidden_words:
-            if name in cleaned_data:
-                raise forms.ValidationError(f'Запрещенное слово "{name}" в описании товара')
+        for word in self.__forbidden_words:
+            if word in cleaned_data:
+                raise forms.ValidationError(f'Запрещенное слово "{word}" в описании товара')
         return cleaned_data

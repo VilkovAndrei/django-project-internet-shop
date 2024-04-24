@@ -18,14 +18,12 @@ class IndexView(TemplateView):
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
-    # fields = ('name', 'description', 'image', 'category', 'price')
     success_url = reverse_lazy("catalog:products")
 
 
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
-    # fields = ('name', 'description', 'image', 'category', 'price')
     success_url = reverse_lazy("catalog:products")
 
 
