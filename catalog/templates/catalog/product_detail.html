@@ -9,8 +9,17 @@
                 <h5 class="card-title">{{ object.name }}</h5>
                 <p class="card-text">{{ object.description }}</p>
                 <p class="card-text">{{ object.price }} руб.</p>
-                <a href="{% url 'catalog:product_update' object.pk %}" class="p-2 btn btn-outline-primary">Редактировать</a>
+                <a href="{% url 'catalog:product_update' object.pk %}"
+                   class="p-2 btn btn-outline-primary">Редактировать</a>
                 <a href="{% url 'catalog:product_delete' object.pk %}" class="p-2 btn btn-outline-primary">Удалить</a>
+            </div>
+            <div class="btn-group">
+                <a type="button" href="{% url 'catalog:version_create' %}"
+                   class="p-2 btn btn-outline-primary">Добавить версию продукта</a>
+                {% if object.versions.exists %}
+                <a type="button" href="{% url 'catalog:versions' pk=object.pk %}"
+                   class="p-2 btn btn-outline-primary">Просмотр версий</a>
+                {% endif %}
             </div>
         </div>
     </div>

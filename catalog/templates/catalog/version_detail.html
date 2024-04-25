@@ -1,0 +1,15 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="card mb-4 box-shadow">
+    <div class="card-body">
+        <h3 class="card-title pricing-card-title">{{ versions.name }}</h3>
+        <h4 class="card-title pricing-card-title">{{ versions.number }}</h4>
+        {% if versions.current_version %}
+            Текущая версия!
+        {% endif %}
+        <div class="btn-group">
+            <a type="button" href="{% url 'catalog:versions' pk=object.product.pk %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

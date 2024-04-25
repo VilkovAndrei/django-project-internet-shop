@@ -2,7 +2,8 @@
 {% load my_tags%}
 {% block content %}
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+<div class="pricing-header px-3 py-3 pt-md-2 pb-md-4 mx-auto text-center">
+    <h4 class="display-4">Наши истории</h4>
     <div class="col-lg-12 col-md-6 col-sm-12">
         <a class="btn btn-outline-primary mb-3" href="{% url 'blog:post_create' %}">Добавить запись</a>
         {% for object in object_list %}
