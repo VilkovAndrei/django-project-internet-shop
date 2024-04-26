@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 
 PSQL_PSW = os.getenv('PostgreSQL_PSW')
+SMTP_APP_PSW = os.getenv('YANDEX_SMTP_APP_PASS')
+MY_YANDEX_EMAIL = os.getenv('MY_YANDEX_EMAIL')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -96,14 +98,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-FILL_JSON_FILE = os.path.join(BASE_DIR, 'data.json')
+FILL_JSON_FILE = os.path.join(BASE_DIR, 'data2.json')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+
+EMAIL_HOST_USER = MY_YANDEX_EMAIL
+EMAIL_HOST_PASSWORD = SMTP_APP_PSW
+
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER

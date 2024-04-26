@@ -16,48 +16,20 @@
         crossorigin="anonymous"></script>
 
 {% block content %} {% endblock %}
+<footer class="pt-4 my-md-5 pt-md-5 border-top">
+    <div class="row">
+        <div class="col-12 col-md">
+            Education
+            <small class="d-block mb-3 text-muted">&copy; 2024</small>
+        </div>
+        <div class="col-6 col-md">
+            <h5>О нас</h5>
+            <ul class="list-unstyled text-small">
+                <li><a class="text-muted" href="/contacts/">Контакты</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
 
-<!--{% if page_obj.has_other_pages %}-->
-<!--<nav class="list-pages">-->
-<!--    <ul>-->
-<!--        {% if page_obj.has_previous %}-->
-<!--        <li class="page-num">-->
-<!--            <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>-->
-<!--        </li>-->
-<!--        {% endif %}-->
-<!--        {% for p in paginator.page_range %}-->
-<!--        {% if page_obj.number == p %}-->
-<!--        <li class="page-num page-num-selected">{{ p }}</li>-->
-<!--        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}-->
-<!--        <li class="page-num">-->
-<!--            <a href="?page={{ p }}">{{ p }}</a>-->
-<!--        </li>-->
-<!--        {% endif %}-->
-<!--        {% endfor %}-->
-<!--        {% if page_obj.has_next %}-->
-<!--        <li class="page-num">-->
-<!--            <a href="?page={{ page_obj.next_page_number }}">&gt;</a>-->
-<!--        </li>-->
-<!--        {% endif %}-->
-<!--    </ul>-->
-<!--</nav>-->
-<!--{% endif %}-->
-<!--<div class="pagination">-->
-<!--    <span class="step-links">-->
-<!--        {% if page_obj.has_previous %}-->
-<!--            <a href="?page=1">&laquo; first</a>-->
-<!--            <a href="?page={{ page_obj.previous_page_number }}">previous</a>-->
-<!--        {% endif %}-->
-
-<!--        <span class="current">-->
-<!--            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.-->
-<!--        </span>-->
-
-<!--        {% if page_obj.has_next %}-->
-<!--            <a href="?page={{ page_obj.next_page_number }}">next</a>-->
-<!--            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>-->
-<!--        {% endif %}-->
-<!--    </span>-->
-<!--</div>-->
 </body>
 </html>

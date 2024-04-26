@@ -1,0 +1,23 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="col-12">
+    <div class="row">
+          <div class="col-3">
+              <div class="card">
+                  <div class="card-header">
+                        <h5 class="my-0 font-weight-normal">Удаление версии товара {{ object.product }}</h5>
+                  </div>
+                  <div class="card-body">
+                      <form method="POST">
+                          {% csrf_token %}
+                          <p>Хотите удалить версию товара "{{ object.name }}"?</p>
+                          <button type="submit" class="btn btn-danger">Подтвердить</button>
+                          <a href="{% url 'catalog:products' %}" class="btn btn-warning">Отмена</a>
+                      </form>
+                  </div>
+              </div>
+          </div>
+    </div>
+</div>
+{% endblock %}

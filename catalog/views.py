@@ -1,40 +1,90 @@
-from django.urls import reverse_lazy
+from django import forms
+from django.forms import inlineformset_factory
+from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.models import Product, OurContact
+from catalog.forms import ProductForm, VersionForm
+from catalog.models import Product, OurContact, Version
 
 
 class IndexView(TemplateView):
     template_name = 'catalog/product_list.html'
     extra_context = {'title': "Главная страница"}
 
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+    #     return context_data
+
     def get_context_data(self, **kwargs):
+        filter_object_list = []
         context_data = super().get_context_data(**kwargs)
         context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+        for product in context_data.get('object_list'):
+            product.current_version = product.versions.filter(current_version=True).first()
+            if product.current_version:
+                filter_object_list.append(product)
+        context_data['object_list'] = filter_object_list
         return context_data
 
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ('name', 'description', 'image', 'category', 'price')
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
 
 
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = ('name', 'description', 'image', 'category', 'price')
+    form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
+        if self.request.method == 'POST':
+            context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            context_data['formset'] = VersionFormset(instance=self.object)
+        return context_data
+
+    def form_valid(self, form):
+
+        context = self.get_context_data()
+        formset = context['formset']
+        if form.is_valid():
+            self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            
+            """ Проверка на наличие нескольких текущих (активных) версий товара"""
+            count = 0
+            for f in formset.forms:
+                if f.cleaned_data['current_version']:
+                    count += 1
+            if count > 1:
+                raise forms.ValidationError('Вы можете установить только одну версию в качестве текущей')
+
+            formset.save()
+
+        return super().form_valid(form)
 
 
 class ProductListView(ListView):
     model = Product
     extra_context = {'title': "Товары"}
-    paginate_by = 4
+    # paginate_by = 4
 
     def get_context_data(self, **kwargs):
+        filter_object_list = []
         context_data = super().get_context_data(**kwargs)
         context_data['object_list'] = Product.objects.order_by("-id")
-        context_data['paginate_by'] = 4
+        for product in context_data.get('object_list'):
+            product.current_version = product.versions.filter(current_version=True).first()
+            # if product.current_version:
+            #     filter_object_list.append(product)
+        # context_data['object_list'] = filter_object_list
+        # context_data['paginate_by'] = 4
         return context_data
 
 
@@ -57,3 +107,42 @@ class ContactsView(TemplateView):
 class ProductDeleteView(DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
+    success_url = reverse_lazy("catalog:products")
+
+
+class VersionListView(ListView):
+    model = Version
+    extra_context = {'title': "Версии товара"}
+
+    def get_queryset(self, *args, **kwargs):
+
+        return Version.objects.filter(product=Product.objects.get(pk=self.kwargs.get('pk')))
+
+
+class VersionCreateView(CreateView):
+    model = Version
+    form_class = VersionForm
+    success_url = reverse_lazy('catalog:products')
+    extra_context = {'title': "Создание версии товара"}
+
+
+class VersionUpdateView(UpdateView):
+    model = Version
+    form_class = VersionForm
+    success_url = reverse_lazy('catalog:products')
+    extra_context = {'title': "Редактирование версии товара"}
+
+
+class VersionDetailView(DetailView):
+    model = Version
+    context_object_name = 'versions'
+    extra_context = {'title': "Версия товара"}
+
+
+class VersionDeleteView(DeleteView):
+    model = Version
+    success_url = reverse_lazy('catalog:products')
+    extra_context = {'title': "Удаление версии товара"}
+
+    def get_success_url(self):
+        return reverse('catalog:products')
