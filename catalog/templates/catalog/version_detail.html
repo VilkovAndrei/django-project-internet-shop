@@ -1,14 +1,18 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<div class="card mb-4 box-shadow">
-    <div class="card-body">
-        <h3 class="card-title pricing-card-title">{{ versions.name }}</h3>
-        <h4 class="card-title pricing-card-title">{{ versions.number }}</h4>
-        {% if versions.current_version %}
+<div class="col-6">
+    <div class="card mb-4 box-shadow">
+        <div class="card-body">
+            <p class="card-title pricing-card-title">Товар: {{ versions.product }}</p>
+            <p class="card-title pricing-card-title">Наименование: {{ versions.name }}</p>
+            <p class="card-title pricing-card-title">Номер версии: {{ versions.number }}</p>
+            {% if versions.current_version %}
             Текущая версия!
-        {% endif %}
-        <div class="btn-group">
-            <a type="button" href="{% url 'catalog:versions' pk=object.product.pk %}" class="btn btn-lg btn-block btn-outline-primary">Назад</a>
+            {% endif %}
+            <div class="btn-group">
+                <a type="button" href="{% url 'catalog:versions' pk=object.product.pk %}"
+                   class="p-2 btn btn-outline-primary">Назад</a>
+            </div>
         </div>
     </div>
 </div>

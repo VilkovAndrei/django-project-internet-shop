@@ -4,6 +4,8 @@ from catalog.models import Product, Version
 
 
 class StyleMixin:
+    forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
@@ -15,7 +17,7 @@ class StyleMixin:
 
 class ProductForm(StyleMixin, forms.ModelForm):
 
-    __forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+    # forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
     class Meta:
         model = Product
@@ -24,7 +26,7 @@ class ProductForm(StyleMixin, forms.ModelForm):
     def clean_name(self):
         cleaned_data = self.cleaned_data.get('name')
 
-        for name in self.__forbidden_words:
+        for name in self.forbidden_words:
             if name in cleaned_data.lower():
                 raise forms.ValidationError(f'Запрещенное слово "{name}" в наименовании товара')
         return cleaned_data
@@ -32,7 +34,7 @@ class ProductForm(StyleMixin, forms.ModelForm):
     def clean_description(self):
         cleaned_data = self.cleaned_data.get('description')
 
-        for word in self.__forbidden_words:
+        for word in self.forbidden_words:
             if word in cleaned_data.lower():
                 raise forms.ValidationError(f'Запрещенное слово "{word}" в описании товара')
         return cleaned_data
@@ -44,10 +46,13 @@ class VersionForm(StyleMixin, forms.ModelForm):
         model = Version
         fields = '__all__'
 
-    def clean_current_version(self):
+    def clean_name(self):
+        cleaned_data = self.cleaned_data.get('name')
 
-        cleaned_data = self.cleaned_data.get('current_version')
-
-        # if cleaned_data:
-        #     raise forms.ValidationError('Текущая версия должна быть одна!')
+        for name in self.forbidden_words:
+            if name in cleaned_data.lower():
+                raise forms.ValidationError(f'Запрещенное слово "{name}" в наименовании версии товара')
         return cleaned_data
+
+
+

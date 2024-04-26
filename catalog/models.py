@@ -61,7 +61,7 @@ class Version(models.Model):
     product = models.ForeignKey(Product, verbose_name='продукт', on_delete=models.CASCADE, related_name='versions')
     number = models.CharField(max_length=50, verbose_name='номер версии')
     name = models.CharField(max_length=150, verbose_name='название версии')
-    current_version = models.BooleanField(default=True, verbose_name='признак текущей версии')
+    current_version = models.BooleanField(default=False, verbose_name='признак текущей версии')
 
     def __str__(self):
         return f'{self.name}'

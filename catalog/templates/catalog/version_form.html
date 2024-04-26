@@ -9,9 +9,9 @@
                         <form method="post">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-primary">
                                 {% if object %}
-                                    Обновить версию
+                                    Сохранить
                                 {% else %}
                                     Создать
                                 {% endif %}

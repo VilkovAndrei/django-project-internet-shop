@@ -1,4 +1,4 @@
-from django.db import transaction
+from django import forms
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -11,9 +11,20 @@ class IndexView(TemplateView):
     template_name = 'catalog/product_list.html'
     extra_context = {'title': "Главная страница"}
 
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+    #     return context_data
+
     def get_context_data(self, **kwargs):
+        filter_object_list = []
         context_data = super().get_context_data(**kwargs)
         context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+        for product in context_data.get('object_list'):
+            product.current_version = product.versions.filter(current_version=True).first()
+            if product.current_version:
+                filter_object_list.append(product)
+        context_data['object_list'] = filter_object_list
         return context_data
 
 
@@ -28,9 +39,6 @@ class ProductUpdateView(UpdateView):
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
 
-    def get_success_url(self, *args, **kwargs):
-        return reverse('catalog:product_update', args=[self.get_object().pk])
-
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
@@ -41,11 +49,23 @@ class ProductUpdateView(UpdateView):
         return context_data
 
     def form_valid(self, form):
-        formset = self.get_context_data()['formset']
-        self.object = form.save()
+
+        context = self.get_context_data()
+        formset = context['formset']
+        if form.is_valid():
+            self.object = form.save()
         if formset.is_valid():
             formset.instance = self.object
-            form.save()
+            
+            """ Проверка на наличие нескольких текущих (активных) версий товара"""
+            count = 0
+            for f in formset.forms:
+                if f.cleaned_data['current_version']:
+                    count += 1
+            if count > 1:
+                raise forms.ValidationError('Вы можете установить только одну версию в качестве текущей')
+
+            formset.save()
 
         return super().form_valid(form)
 
@@ -53,7 +73,7 @@ class ProductUpdateView(UpdateView):
 class ProductListView(ListView):
     model = Product
     extra_context = {'title': "Товары"}
-    paginate_by = 4
+    # paginate_by = 4
 
     def get_context_data(self, **kwargs):
         filter_object_list = []
@@ -61,9 +81,9 @@ class ProductListView(ListView):
         context_data['object_list'] = Product.objects.order_by("-id")
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
-            if product.current_version:
-                filter_object_list.append(product)
-        context_data['object_list'] = filter_object_list
+            # if product.current_version:
+            #     filter_object_list.append(product)
+        # context_data['object_list'] = filter_object_list
         # context_data['paginate_by'] = 4
         return context_data
 
@@ -87,6 +107,7 @@ class ContactsView(TemplateView):
 class ProductDeleteView(DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
+    success_url = reverse_lazy("catalog:products")
 
 
 class VersionListView(ListView):
@@ -120,4 +141,8 @@ class VersionDetailView(DetailView):
 
 class VersionDeleteView(DeleteView):
     model = Version
-    success_url = reverse_lazy('catalog:versions')
+    success_url = reverse_lazy('catalog:products')
+    extra_context = {'title': "Удаление версии товара"}
+
+    def get_success_url(self):
+        return reverse('catalog:products')
