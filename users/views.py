@@ -39,7 +39,8 @@ class RegisterDoneView(TemplateView):
 
 
 class RegisterConfirmView(View):
-    def get(self, request, uidb64, token):
+    @staticmethod
+    def get(request, uidb64, token):
         try:
             uid = urlsafe_base64_decode(uidb64)
             user = User.objects.get(pk=uid)
@@ -76,6 +77,7 @@ class UserPasswordResetView(PasswordResetView):
     template_name = 'users/password_reset_form.html'
     success_url = reverse_lazy('users:login')
     code = secrets.token_hex(8)
+
     def form_valid(self, form):
         if self.request.method == 'POST':
             email = self.request.POST['email']
@@ -86,9 +88,7 @@ class UserPasswordResetView(PasswordResetView):
                 user.save()
                 activate_new_password_task(user, password)
                 return HttpResponseRedirect(reverse('users:login'))
-            except User.DoesNotExist:
+            except (Exception):
                 return self.render_to_response('users:register')
 
         return super().form_valid(form)
-
-
