@@ -33,10 +33,11 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+    raise_exeption = True
 
     def form_valid(self, form):
         if form.is_valid():
-            product = form.save()
+            product = form.save(commit=False)
             product.parent = self.request.user
             product.save()
 
@@ -47,6 +48,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+    raise_exeption = True
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -63,6 +65,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         formset = context['formset']
         if form.is_valid():
             self.object = form.save()
+            self.object.parent = self.request.user
         if formset.is_valid():
             formset.instance = self.object
             
@@ -117,11 +120,13 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
+    raise_exeption = True
 
 
 class VersionListView(LoginRequiredMixin, ListView):
     model = Version
     extra_context = {'title': "Версии товара"}
+    raise_exeption = True
 
     def get_queryset(self, *args, **kwargs):
 
@@ -133,6 +138,7 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Создание версии товара"}
+    raise_exeption = True
 
 
 class VersionUpdateView(LoginRequiredMixin, UpdateView):
@@ -140,6 +146,7 @@ class VersionUpdateView(LoginRequiredMixin, UpdateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Редактирование версии товара"}
+    raise_exeption = True
 
 
 class VersionDetailView(DetailView):
@@ -152,6 +159,7 @@ class VersionDeleteView(LoginRequiredMixin, DeleteView):
     model = Version
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Удаление версии товара"}
+    raise_exeption = True
 
     def get_success_url(self):
         return reverse('catalog:products')

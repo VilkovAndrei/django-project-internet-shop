@@ -13,6 +13,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ object.name }}</h5>
                             <p class="card-text">{{ object.description|slice:":100" }}</p>
+                            <p class="card-text">Владелец: {{ object.parent.email | default:"неопределен" }}</p>
                             {% if object.current_version %}
                                 <p class="card-text">Версия: {{ object.current_version }}</p>
                             {% endif %}
