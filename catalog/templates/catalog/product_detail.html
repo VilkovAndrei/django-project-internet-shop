@@ -13,6 +13,11 @@
                    class="p-2 btn btn-outline-primary">Редактировать</a>
                 <a href="{% url 'catalog:product_delete' object.pk %}" class="p-2 btn btn-outline-primary">Удалить</a>
             </div>
+            {% if object.parent %}
+                <p class="card-text">Этот товар может редактировать пользователь {{ object.parent }}</p>
+            {% else %}
+                <p class="card-text">Этот товар может редактировать только superuser!</p>
+            {% endif %}
             <div class="btn-group">
                 <a type="button" href="{% url 'catalog:version_create' %}"
                    class="p-2 btn btn-outline-primary">Добавить версию продукта</a>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import reverse
 
+from users.models import User
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -44,6 +45,7 @@ class Product(models.Model):
     price = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='время создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='время редактирования')
+    parent = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='создатель', **NULLABLE)
 
     def __str__(self):
         return f'{self.name} ({self.description})'
