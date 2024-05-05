@@ -15,7 +15,7 @@ class SendEmail:
         self.uid = urlsafe_base64_encode(str(self.user.pk).encode())
 
     def send_activate_email(self):
-        reset_password_url = reverse_lazy("users:register_confirmed", kwargs={"uidb64": self.uid, "token": self.token})
+        reset_password_url = reverse_lazy("users:register_confirm", kwargs={"uidb64": self.uid, "token": self.token})
         subject = f"Активация аккаунта на сайте {self.current_site}"
         message = (
             f"Благодарим за регистрацию на сайте {self.current_site}.\n"
@@ -25,6 +25,20 @@ class SendEmail:
 
         self.user.send_confirm_email(subject=subject, message=message)
 
+    def send_password_reset(self, new_password):
+        subject = f"Сброс пароля на сайте {self.current_site}"
+        message = (
+            f"Для авторизации на сайте используйте новый пароль:{new_password}\n"
+        )
+
+        self.user.send_confirm_email(subject=subject, message=message)
+
+
 def activate_email_task(user: User):
     send_email = SendEmail(user=user)
     send_email.send_activate_email()
+
+
+def activate_new_password_task(user: User, password):
+    send_email = SendEmail(user=user)
+    send_email.send_password_reset(password)
