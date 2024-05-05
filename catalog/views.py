@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -28,13 +29,21 @@ class IndexView(TemplateView):
         return context_data
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
 
+    def form_valid(self, form):
+        if form.is_valid():
+            product = form.save()
+            product.parent = self.request.user
+            product.save()
 
-class ProductUpdateView(UpdateView):
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
@@ -76,7 +85,7 @@ class ProductListView(ListView):
     # paginate_by = 4
 
     def get_context_data(self, **kwargs):
-        filter_object_list = []
+        # filter_object_list = []
         context_data = super().get_context_data(**kwargs)
         context_data['object_list'] = Product.objects.order_by("-id")
         for product in context_data.get('object_list'):
@@ -104,13 +113,13 @@ class ContactsView(TemplateView):
         return context_data
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
 
 
-class VersionListView(ListView):
+class VersionListView(LoginRequiredMixin, ListView):
     model = Version
     extra_context = {'title': "Версии товара"}
 
@@ -119,14 +128,14 @@ class VersionListView(ListView):
         return Version.objects.filter(product=Product.objects.get(pk=self.kwargs.get('pk')))
 
 
-class VersionCreateView(CreateView):
+class VersionCreateView(LoginRequiredMixin, CreateView):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Создание версии товара"}
 
 
-class VersionUpdateView(UpdateView):
+class VersionUpdateView(LoginRequiredMixin, UpdateView):
     model = Version
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
@@ -139,7 +148,7 @@ class VersionDetailView(DetailView):
     extra_context = {'title': "Версия товара"}
 
 
-class VersionDeleteView(DeleteView):
+class VersionDeleteView(LoginRequiredMixin, DeleteView):
     model = Version
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Удаление версии товара"}

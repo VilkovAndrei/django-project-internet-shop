@@ -2,8 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from django.db import models
 
-from catalog.models import NULLABLE
 from config.settings import EMAIL_HOST_USER
+
+NULLABLE = {'blank': True, 'null': True}
 
 
 class User(AbstractUser):
