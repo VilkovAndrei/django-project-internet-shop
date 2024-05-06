@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -116,11 +116,15 @@ class ContactsView(TemplateView):
         return context_data
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
     raise_exeption = True
+
+    def test_func(self):
+        """Удалить товар может только superuser"""
+        return self.request.user.is_superuser
 
 
 class VersionListView(LoginRequiredMixin, ListView):

@@ -5,7 +5,9 @@
     <h4 class="display-4">Наши товары</h4>
     <div class="container-fluid">
         <div class="col-lg-12 col-md-6 col-sm-4">
+            {% if perms.catalog.add_product %}
             <a class="btn btn-outline-primary mb-3" href="{% url 'catalog:product_create' %}">Добавить товар</a>
+            {% endif %}
             <div class="row row-cols-1 row-cols-md-4 g-2">
                 {% for object in object_list %}
                 <div class="card-group">
@@ -13,10 +15,10 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ object.name }}</h5>
                             <p class="card-text">{{ object.description|slice:":100" }}</p>
-                            <p class="card-text">Владелец: {{ object.parent.email | default:"неопределен" }}</p>
-                            {% if object.current_version %}
-                                <p class="card-text">Версия: {{ object.current_version }}</p>
-                            {% endif %}
+<!--                            <p class="card-text">Владелец: {{ object.parent.email | default:"неопределен" }}</p>-->
+<!--                            {% if object.current_version %}-->
+<!--                                <p class="card-text">Версия: {{ object.current_version }}</p>-->
+<!--                            {% endif %}-->
                             <p class="card-text">{{ object.price }} руб.</p>
                             <!--                            <a href="{% url 'catalog:product_detail' object.pk %}"-->
                             <!--                               class="p-2 btn btn-outline-primary">Подробнее</a>-->
@@ -24,10 +26,14 @@
                                 <div class="btn-group">
                                     <a href="{% url 'catalog:product_detail' object.pk %}"
                                        class="btn btn-sm btn-outline-primary">Просмотр</a>
+                                    {% if perms.catalog.change_product %}
                                     <a href="{% url 'catalog:product_update' object.pk %}"
                                        class="btn btn-sm btn-outline-primary">Редактирование</a>
+                                    {% endif %}
+                                    {% if user.is_superuser %}
                                     <a href="{% url 'catalog:product_delete' object.pk %}"
                                        class="btn btn-sm btn-outline-danger">Удаление</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
