@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -8,7 +9,7 @@ from catalog.forms import ProductForm, VersionForm
 from catalog.models import Product, OurContact, Version
 
 
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/product_list.html'
     extra_context = {'title': "Главная страница"}
 
@@ -20,7 +21,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         filter_object_list = []
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+        context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")[0:5]
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
             if product.current_version:
@@ -33,6 +34,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+    permission_required = 'catalog.add_product'
     raise_exeption = True
 
     def form_valid(self, form):
@@ -48,6 +50,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+    permission_required = 'catalog.change_product'
     raise_exeption = True
 
     def get_context_data(self, **kwargs):
@@ -82,15 +85,16 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {'title': "Товары"}
+    permission_required = 'catalog.view_product'
     # paginate_by = 4
 
     def get_context_data(self, **kwargs):
         # filter_object_list = []
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = Product.objects.order_by("-id")
+        context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
             # if product.current_version:
@@ -103,6 +107,7 @@ class ProductListView(ListView):
 class ProductDetailView(DetailView):
     model = Product
     extra_context = {'title': "Товар"}
+    # permission_required = 'catalog.view_product'
 
 
 class ContactsView(TemplateView):
@@ -120,6 +125,7 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
+    permission_required = 'catalog.delete_product'
     raise_exeption = True
 
     def test_func(self):

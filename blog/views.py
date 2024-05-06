@@ -1,4 +1,5 @@
 # from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -6,14 +7,16 @@ from blog.models import Post
 from blog.services import send_blog_email
 
 
-class PostCreateView(CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
+    permission_required = 'blog.add_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
     success_url = reverse_lazy("blog:post_list")
     extra_context = {'title': "Создание записи"}
 
 
-class PostUpdateView(UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    permission_required = 'blog.change_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
     extra_context = {'title': "Редактирование записи"}
@@ -22,7 +25,7 @@ class PostUpdateView(UpdateView):
         return reverse_lazy('blog:post_detail', kwargs={'pk': self.object.pk})
 
 
-class PostListView(ListView):
+class PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'blog:post_list'
     extra_context = {'title': "Записи блога"}
@@ -33,7 +36,8 @@ class PostListView(ListView):
         return queryset
 
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
+    permission_required = 'blog.view_post'
     model = Post
     extra_context = {'title': "Запись блога"}
 
@@ -46,6 +50,11 @@ class PostDetailView(DetailView):
         return self.object
 
 
-class PostDeleteView(DeleteView):
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    permission_required = 'blog.delete_post'
     model = Post
     extra_context = {'title': "Удаление записи"}
+
+    def test_func(self):
+        """Удалить post может только superuser"""
+        return self.request.user.is_superuser
