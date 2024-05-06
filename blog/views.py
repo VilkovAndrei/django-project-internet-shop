@@ -1,5 +1,5 @@
 # from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -7,7 +7,7 @@ from blog.models import Post
 from blog.services import send_blog_email
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'blog.add_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
@@ -15,7 +15,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     extra_context = {'title': "Создание записи"}
 
 
-class PostUpdateView(LoginRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'blog.change_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
