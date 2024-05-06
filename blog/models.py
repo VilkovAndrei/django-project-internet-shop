@@ -15,6 +15,16 @@ class Post(models.Model):
     count_view = models.SmallIntegerField(default=0, verbose_name='Количество просмотров')
     author = models.CharField(max_length=255, verbose_name='Автор')
 
+    class Meta:
+        verbose_name = 'статья'
+        verbose_name_plural = 'статьи'
+        permissions = [
+            (
+                "set_published_status",
+                "Can set published status"
+            ),
+        ]
+
     def __str__(self):
         return f'{self.title}'
 
@@ -36,7 +46,3 @@ class Post(models.Model):
             new_post.save()
 
         return super().form_valid(form)
-
-    class Meta:
-        verbose_name = 'запись'
-        verbose_name_plural = 'записи'
