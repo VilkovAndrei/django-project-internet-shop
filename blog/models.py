@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from pytils.translit import slugify
 
+from users.models import User
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -13,7 +15,7 @@ class Post(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания')
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
     count_view = models.SmallIntegerField(default=0, verbose_name='Количество просмотров')
-    author = models.CharField(max_length=255, verbose_name='Автор')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, default=10, verbose_name='Автор')
 
     class Meta:
         verbose_name = 'статья'

@@ -5,7 +5,7 @@ from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, OurContact, Version
 
 
@@ -30,7 +30,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return context_data
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
@@ -46,15 +46,33 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    # form_class = ProductForm
+    # def get_form_class(self):
+    # if self.request.user.has_perm("product.change_description") or self.request.user.has_perm("product.set_published_status"):
+    #     self.form_class = ProductModeratorForm
+    # else:
+    #     self.form_class = ProductForm
+
+
+    # def get(self, request, *args, **kwargs):
+    #     self.get_form_class()
+    #     return super().get(request,*args, **kwargs)
+
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
     permission_required = 'catalog.change_product'
     raise_exeption = True
 
+
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        if self.request.user.has_perm("product.change_description") or self.request.user.has_perm(
+                "product.set_published_status"):
+            context_data['form_class'] = ProductModeratorForm
+        else:
+            context_data['form_class'] = ProductForm
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
         if self.request.method == 'POST':
             context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
