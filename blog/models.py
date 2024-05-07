@@ -15,7 +15,7 @@ class Post(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания')
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
     count_view = models.SmallIntegerField(default=0, verbose_name='Количество просмотров')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, default=10, verbose_name='Автор')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
 
     class Meta:
         verbose_name = 'статья'
@@ -33,18 +33,18 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('blog:post_detail', kwargs={'slug': self.slug})
 
-    # def save(self, *args, **kwargs):
-    #     """
-    #     Сохранение полей модели при их отсутствии заполнения
-    #     """
-    #     if not self.slug:
-    #         self.slug = slugify(self.title)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        """
+        Сохранение полей модели при их отсутствии заполнения
+        """
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
-    def form_valid(self, form):
-        if form.is_valid():
-            new_post = form.save()
-            new_post.slug = slugify(self.title)
-            new_post.save()
-
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     if form.is_valid():
+    #         new_post = form.save()
+    #         new_post.slug = slugify(self.title)
+    #         new_post.save()
+    #
+    #     return super().form_valid(form)

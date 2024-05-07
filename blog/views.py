@@ -2,24 +2,36 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from pytils.translit import slugify
 
 from blog.models import Post
 from blog.services import send_blog_email
 
 
-class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'blog.add_post'
+class PostCreateView(LoginRequiredMixin, CreateView):
+    # permission_required = 'blog.add_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
     success_url = reverse_lazy("blog:post_list")
-    extra_context = {'title': "Создание записи"}
+    extra_context = {'title': "Создание записи блога"}
+
+    # def get_success_url(self):
+    #     return reverse_lazy('blog:post_detail', kwargs={'pk': self.object.pk})
+
+    # def form_valid(self, form):
+    #     if form.is_valid():
+    #         new_post = form.save()
+    #         new_post.slug = slugify(self.title)
+    #         new_post.save()
+    #
+    #     return super().form_valid(form)
 
 
-class PostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     permission_required = 'blog.change_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
-    extra_context = {'title': "Редактирование записи"}
+    extra_context = {'title': "Редактирование записи блога"}
 
     def get_success_url(self):
         return reverse_lazy('blog:post_detail', kwargs={'pk': self.object.pk})
@@ -53,7 +65,7 @@ class PostDetailView(LoginRequiredMixin, DetailView):
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     permission_required = 'blog.delete_post'
     model = Post
-    extra_context = {'title': "Удаление записи"}
+    extra_context = {'title': "Удаление записи блога"}
 
     def test_func(self):
         """Удалить post может только superuser"""
