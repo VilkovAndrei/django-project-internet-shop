@@ -8,8 +8,8 @@ from blog.models import Post
 from blog.services import send_blog_email
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
-    # permission_required = 'blog.add_post'
+class PostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'blog.add_post'
     model = Post
     fields = ('title', 'description', 'preview', 'is_published')
     success_url = reverse_lazy("blog:post_list")

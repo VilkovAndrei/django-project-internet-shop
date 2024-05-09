@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
@@ -12,11 +12,6 @@ from catalog.models import Product, OurContact, Version
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/product_list.html'
     extra_context = {'title': "Главная страница"}
-
-    # def get_context_data(self, **kwargs):
-    #     context_data = super().get_context_data(**kwargs)
-    #     context_data['object_list'] = Product.objects.order_by("-id")[0:5]
-    #     return context_data
 
     def get_context_data(self, **kwargs):
         filter_object_list = []
@@ -46,33 +41,15 @@ class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    # form_class = ProductForm
-    # def get_form_class(self):
-    # if self.request.user.has_perm("product.change_description") or self.request.user.has_perm("product.set_published_status"):
-    #     self.form_class = ProductModeratorForm
-    # else:
-    #     self.form_class = ProductForm
-
-
-    # def get(self, request, *args, **kwargs):
-    #     self.get_form_class()
-    #     return super().get(request,*args, **kwargs)
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
-    permission_required = 'catalog.change_product'
-    raise_exeption = True
-
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        if self.request.user.has_perm("product.change_description") or self.request.user.has_perm(
-                "product.set_published_status"):
-            context_data['form_class'] = ProductModeratorForm
-        else:
-            context_data['form_class'] = ProductForm
+
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
         if self.request.method == 'POST':
             context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
@@ -103,11 +80,14 @@ class ProductUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
         return super().form_valid(form)
 
 
+class ProductUpdateModeratorView(ProductUpdateView):
+    form_class = ProductModeratorForm
+
+
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {'title': "Товары"}
     permission_required = 'catalog.view_product'
-    # paginate_by = 4
 
     def get_context_data(self, **kwargs):
         # filter_object_list = []
@@ -118,14 +98,12 @@ class ProductListView(LoginRequiredMixin, ListView):
             # if product.current_version:
             #     filter_object_list.append(product)
         # context_data['object_list'] = filter_object_list
-        # context_data['paginate_by'] = 4
         return context_data
 
 
 class ProductDetailView(DetailView):
     model = Product
     extra_context = {'title': "Товар"}
-    # permission_required = 'catalog.view_product'
 
 
 class ContactsView(TemplateView):
@@ -144,7 +122,6 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
     permission_required = 'catalog.delete_product'
-    raise_exeption = True
 
     def test_func(self):
         """Удалить товар может только superuser"""
@@ -166,7 +143,6 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Создание версии товара"}
-    raise_exeption = True
 
 
 class VersionUpdateView(LoginRequiredMixin, UpdateView):
@@ -174,7 +150,6 @@ class VersionUpdateView(LoginRequiredMixin, UpdateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Редактирование версии товара"}
-    raise_exeption = True
 
 
 class VersionDetailView(DetailView):

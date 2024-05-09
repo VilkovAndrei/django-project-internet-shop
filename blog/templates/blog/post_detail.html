@@ -9,7 +9,7 @@
                 <h5 class="card-title">Заголовок: {{ object.title }}</h5>
                 <p class="card-text">Содержание: {{ object.description }}</p>
                 <p class="card-text">Количество просмотров: {{ object.count_view }}</p>
-                {% if object.author_id == request.user.id or request.user.is_superuser %}
+                {% if object.author_id == request.user.id or request.user.is_superuser or perms.blog.change_post %}
                     <a href="{% url 'blog:post_update' object.pk %}" class="p-2 btn btn-outline-primary">Редактировать</a>
                     <a href="{% url 'blog:post_delete' object.pk %}" class="p-2 btn btn-outline-primary">Удалить</a>
                 {% endif %}

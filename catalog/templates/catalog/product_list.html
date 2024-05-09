@@ -26,9 +26,15 @@
                                 <div class="btn-group">
                                     <a href="{% url 'catalog:product_detail' object.pk %}"
                                        class="btn btn-sm btn-outline-primary">Просмотр</a>
-                                    {% if object.parent == user or user.is_superuser%}
-                                    <a href="{% url 'catalog:product_update' object.pk %}"
-                                       class="btn btn-sm btn-outline-primary">Редактирование</a>
+<!--                                    <p>{{ user }}   {{ perms.catalog.change_description_product }}</p>-->
+                                    {% if object.parent == user or user.is_superuser or perms.catalog.set_published_status %}
+                                        {% if perms.catalog.set_published_status %}
+                                            <a href="{% url 'catalog:product_update_moderator' object.pk %}"
+                                               class="btn btn-sm btn-outline-primary">Редактирование</a>
+                                        {% else %}
+                                            <a href="{% url 'catalog:product_update' object.pk %}"
+                                               class="btn btn-sm btn-outline-primary">Редактирование</a>
+                                        {% endif %}
                                     {% endif %}
                                     {% if user.is_superuser %}
                                     <a href="{% url 'catalog:product_delete' object.pk %}"

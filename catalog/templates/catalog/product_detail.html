@@ -10,7 +10,7 @@
                 <p class="card-text">{{ object.description }}</p>
                 <p class="card-text">{{ object.price }} руб.</p>
 
-                {% if perms.catalog.change_category and perms.catalog.change_description and perms.catalog.set_published or object.parent == user or user.is_superuser %}
+                {% if perms.catalog.set_published_status or object.parent == user or user.is_superuser %}
                 <a href="{% url 'catalog:product_update' object.pk %}"
                    class="p-2 btn btn-outline-primary">Редактировать</a>
                 {% endif %}
@@ -23,7 +23,7 @@
             {% else %}
                 <p class="card-text">Этот товар может редактировать только superuser!</p>
             {% endif %}
-            {% if perms.catalog.change_category and perms.catalog.change_description and perms.catalog.set_published or object.parent == user or user.is_superuser %}
+            {% if perms.catalog.set_published or object.parent == user or user.is_superuser %}
             <div class="btn-group">
                 <a type="button" href="{% url 'catalog:version_create' %}"
                    class="p-2 btn btn-outline-primary">Добавить версию продукта</a>
