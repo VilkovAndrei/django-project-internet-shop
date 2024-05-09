@@ -16,7 +16,7 @@
                 <p class="card-text">{{ object.description }}</p>
                 <p class="card-text">Дата создания: {{ object.created_at }}</p>
                 <p class="card-text">Количество просмотров - {{ object.count_view }}</p>
-                <a href="{% url 'blog:post_detail' object.pk %}" class="p-2 btn btn-outline-primary">Подробнее</a>
+                <a href="{% url 'blog:post_detail' object.pk %}" class="p-2 btn btn-outline-primary">Просмотр</a>
             </div>
         </div>
         {% endfor %}

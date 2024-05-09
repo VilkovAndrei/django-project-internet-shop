@@ -40,11 +40,3 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
-
-    # def form_valid(self, form):
-    #     if form.is_valid():
-    #         new_post = form.save()
-    #         new_post.slug = slugify(self.title)
-    #         new_post.save()
-    #
-    #     return super().form_valid(form)

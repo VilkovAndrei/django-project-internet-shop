@@ -97,7 +97,7 @@ class ProductListView(LoginRequiredMixin, ListView):
             product.current_version = product.versions.filter(current_version=True).first()
             # if product.current_version:
             #     filter_object_list.append(product)
-        # context_data['object_list'] = filter_object_list
+        context_data['set_published_status'] = self.request.user.groups.filter(name='product_moderator').exists()
         return context_data
 
 
@@ -121,7 +121,6 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
-    permission_required = 'catalog.delete_product'
 
     def test_func(self):
         """Удалить товар может только superuser"""

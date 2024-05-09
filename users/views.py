@@ -71,25 +71,25 @@ class ProfileView(UpdateView):
     form_class = UserProfileForm
     success_url = reverse_lazy('catalog:home')
 
-    def get_perms(self):
-        content_type = ContentType.objects.get_for_model(Product)
-        user_permission = Permission.objects.filter(content_type=content_type)
-        print([perm.codename for perm in user_permission])
-        product_moderator = Group.objects.get(name='product_moderator')
-        # product_moderator.permissions.add(user_permission)
-        user = self.request.user
-        for perm in user_permission:
-            product_moderator.permissions.add(perm)
-            user.user_permissions.add(perm)
-            user.save()
-
-            is_perm_user = user.has_perm(perm)
-            print(f'Пользователь - {user}, право {perm} = {is_perm_user}')
-        print(user.get_group_permissions())
-
-    def get(self, request, *args, **kwargs):
-        self.get_perms()
-        return super().get(request, *args, **kwargs)
+    # def get_perms(self):
+    #     content_type = ContentType.objects.get_for_model(Product)
+    #     user_permission = Permission.objects.filter(content_type=content_type)
+    #     print([perm.codename for perm in user_permission])
+    #     product_moderator = Group.objects.get(name='product_moderator')
+    #     # product_moderator.permissions.add(user_permission)
+    #     user = self.request.user
+    #     for perm in user_permission:
+    #         product_moderator.permissions.add(perm)
+    #         user.user_permissions.add(perm)
+    #         user.save()
+    #
+    #         is_perm_user = user.has_perm(perm)
+    #         print(f'Пользователь - {user}, право {perm} = {is_perm_user}')
+    #     print(user.get_group_permissions())
+    #
+    # def get(self, request, *args, **kwargs):
+    #     self.get_perms()
+    #     return super().get(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         return User.objects.get(email=self.kwargs.get("email"))

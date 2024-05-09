@@ -20,20 +20,17 @@
                                 <p class="card-text">Версия: {{ object.current_version }}</p>
                             {% endif %}
                             <p class="card-text">{{ object.price }} руб.</p>
-                            <!--                            <a href="{% url 'catalog:product_detail' object.pk %}"-->
-                            <!--                               class="p-2 btn btn-outline-primary">Подробнее</a>-->
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a href="{% url 'catalog:product_detail' object.pk %}"
                                        class="btn btn-sm btn-outline-primary">Просмотр</a>
-<!--                                    <p>{{ user }}   {{ perms.catalog.change_description_product }}</p>-->
-                                    {% if object.parent == user or user.is_superuser or perms.catalog.set_published_status %}
-                                        {% if perms.catalog.set_published_status %}
+                                    {% if object.parent == user or user.is_superuser %}
+                                        <a href="{% url 'catalog:product_update' object.pk %}"
+                                           class="btn btn-sm btn-outline-primary">Редактирование</a>
+                                    {% else %}
+                                        {% if set_published_status %}
                                             <a href="{% url 'catalog:product_update_moderator' object.pk %}"
-                                               class="btn btn-sm btn-outline-primary">Редактирование</a>
-                                        {% else %}
-                                            <a href="{% url 'catalog:product_update' object.pk %}"
-                                               class="btn btn-sm btn-outline-primary">Редактирование</a>
+                                           class="btn btn-sm btn-outline-primary">Модерирование</a>
                                         {% endif %}
                                     {% endif %}
                                     {% if user.is_superuser %}
