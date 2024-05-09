@@ -1,26 +1,22 @@
 from django import forms
-from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from catalog.models import Product, OurContact, Version
 
 
-class IndexView(TemplateView):
+class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'catalog/product_list.html'
     extra_context = {'title': "Главная страница"}
-
-    # def get_context_data(self, **kwargs):
-    #     context_data = super().get_context_data(**kwargs)
-    #     context_data['object_list'] = Product.objects.order_by("-id")[0:5]
-    #     return context_data
 
     def get_context_data(self, **kwargs):
         filter_object_list = []
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = Product.objects.order_by("-id")[0:5]
+        context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")[0:5]
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
             if product.current_version:
@@ -29,10 +25,11 @@ class IndexView(TemplateView):
         return context_data
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
+    permission_required = 'catalog.add_product'
     raise_exeption = True
 
     def form_valid(self, form):
@@ -45,13 +42,14 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("catalog:products")
-    raise_exeption = True
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+
         VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=0)
         if self.request.method == 'POST':
             context_data['formset'] = VersionFormset(self.request.POST, instance=self.object)
@@ -82,21 +80,24 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class ProductListView(ListView):
+class ProductUpdateModeratorView(ProductUpdateView):
+    form_class = ProductModeratorForm
+
+
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {'title': "Товары"}
-    # paginate_by = 4
+    permission_required = 'catalog.view_product'
 
     def get_context_data(self, **kwargs):
         # filter_object_list = []
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = Product.objects.order_by("-id")
+        context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
             # if product.current_version:
             #     filter_object_list.append(product)
-        # context_data['object_list'] = filter_object_list
-        # context_data['paginate_by'] = 4
+        context_data['set_published_status'] = self.request.user.groups.filter(name='product_moderator').exists()
         return context_data
 
 
@@ -116,11 +117,14 @@ class ContactsView(TemplateView):
         return context_data
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     extra_context = {'title': "Удаление товара"}
     success_url = reverse_lazy("catalog:products")
-    raise_exeption = True
+
+    def test_func(self):
+        """Удалить товар может только superuser"""
+        return self.request.user.is_superuser
 
 
 class VersionListView(LoginRequiredMixin, ListView):
@@ -138,7 +142,6 @@ class VersionCreateView(LoginRequiredMixin, CreateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Создание версии товара"}
-    raise_exeption = True
 
 
 class VersionUpdateView(LoginRequiredMixin, UpdateView):
@@ -146,7 +149,6 @@ class VersionUpdateView(LoginRequiredMixin, UpdateView):
     form_class = VersionForm
     success_url = reverse_lazy('catalog:products')
     extra_context = {'title': "Редактирование версии товара"}
-    raise_exeption = True
 
 
 class VersionDetailView(DetailView):

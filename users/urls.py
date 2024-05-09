@@ -13,7 +13,7 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('register_done/', RegisterDoneView.as_view(), name='register_done'),
     path('register_confirm/<uidb64>/<token>/', RegisterConfirmView.as_view(), name="register_confirm"),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/<email>', ProfileView.as_view(), name='profile'),
     path('password-reset/',
          UserPasswordResetView.as_view(
              template_name="users/password_reset_form.html",

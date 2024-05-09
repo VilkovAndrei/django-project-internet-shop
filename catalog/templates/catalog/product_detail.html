@@ -9,15 +9,24 @@
                 <h5 class="card-title">{{ object.name }}</h5>
                 <p class="card-text">{{ object.description }}</p>
                 <p class="card-text">{{ object.price }} руб.</p>
-                <a href="{% url 'catalog:product_update' object.pk %}"
-                   class="p-2 btn btn-outline-primary">Редактировать</a>
+
+                {% if set_published_status or object.parent == user or user.is_superuser %}
+                    <a href="{% url 'catalog:product_update' object.pk %}"
+                       class="p-2 btn btn-outline-primary">Редактировать</a>
+                {% elif set_published_status %}
+                    <a href="{% url 'catalog:product_update_moderator' object.pk %}"
+                       class="btn btn-sm btn-outline-primary">Модерировать</a>
+                {% endif %}
+                {% if object.parent == user or user.is_superuser %}
                 <a href="{% url 'catalog:product_delete' object.pk %}" class="p-2 btn btn-outline-primary">Удалить</a>
+                {% endif %}
             </div>
-            {% if object.parent %}
-                <p class="card-text">Этот товар может редактировать пользователь {{ object.parent }}</p>
-            {% else %}
-                <p class="card-text">Этот товар может редактировать только superuser!</p>
-            {% endif %}
+<!--            {% if object.parent %}-->
+<!--                <p class="card-text">Этот товар может редактировать пользователь {{ object.parent }}</p>-->
+<!--            {% else %}-->
+<!--                <p class="card-text">Этот товар может редактировать только superuser!</p>-->
+<!--            {% endif %}-->
+            {% if set_published_status or object.parent == user or user.is_superuser %}
             <div class="btn-group">
                 <a type="button" href="{% url 'catalog:version_create' %}"
                    class="p-2 btn btn-outline-primary">Добавить версию продукта</a>
@@ -26,6 +35,7 @@
                    class="p-2 btn btn-outline-primary">Просмотр версий</a>
                 {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -46,16 +46,31 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='время создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='время редактирования')
     parent = models.ForeignKey(User, on_delete=models.SET_NULL, verbose_name='создатель', **NULLABLE)
+    is_published = models.BooleanField(default=False, verbose_name='признак публикации')
+
+    class Meta:
+        verbose_name = 'товар'
+        verbose_name_plural = 'товары'
+        permissions = [
+            (
+                "set_published_status",
+                "Can set published status"
+            ),
+            (
+                "change_description",
+                "Can change description"
+            ),
+            (
+                "change_category",
+                "Can change category"
+            )
+        ]
 
     def __str__(self):
         return f'{self.name} ({self.description})'
 
     def get_absolut_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.pk})
-
-    class Meta:
-        verbose_name = 'товар'
-        verbose_name_plural = 'товары'
 
 
 class Version(models.Model):

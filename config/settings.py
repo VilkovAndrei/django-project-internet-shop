@@ -50,6 +50,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'django.contrib.auth.context_processors.PermWrapper'
             ],
         },
     },
@@ -89,8 +90,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
-
+# ADMIN_MEDIA_PREFIX = '/static/admin/'
 STATICFILES_DIRS = (
     BASE_DIR / 'static',
 )
