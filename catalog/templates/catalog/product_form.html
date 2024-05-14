@@ -43,11 +43,11 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-                        {% crispy formset.management_form %}
-<!--                        {{ formset.management_form}}-->
+<!--                        {% crispy formset.management_form %}-->
+                        {{ formset.management_form}}
                         {% for form in formset.forms %}
-<!--                        {{ form.as_p }}-->
-                        {% crispy form %}
+                        {{ form.as_p }}
+<!--                        {% crispy form %}-->
                         {% if not forloop.last %}
                             <hr>
                         {% endif %}
