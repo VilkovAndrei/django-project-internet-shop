@@ -6,7 +6,8 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
-from catalog.models import Product, OurContact, Version
+from catalog.models import Product, OurContact, Version, Category
+from catalog.services import get_categories_from_cache, get_products_from_cache
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -63,7 +64,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         formset = context['formset']
         if form.is_valid():
             self.object = form.save()
-            self.object.parent = self.request.user
+            # self.object.parent = self.request.user
         if formset.is_valid():
             formset.instance = self.object
             
@@ -84,6 +85,19 @@ class ProductUpdateModeratorView(ProductUpdateView):
     form_class = ProductModeratorForm
 
 
+class CategoryListView(LoginRequiredMixin, ListView):
+    model = Category
+    extra_context = {'title': "Категории товара"}
+    success_url = reverse_lazy("catalog:products")
+    permission_required = 'catalog.view_category'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['object_list'] = get_categories_from_cache()
+
+        return context_data
+
+
 class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     extra_context = {'title': "Товары"}
@@ -92,7 +106,8 @@ class ProductListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         # filter_object_list = []
         context_data = super().get_context_data(**kwargs)
-        context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")
+        context_data['object_list'] = get_products_from_cache().filter(is_published=True).order_by("-id")
+        # context_data['object_list'] = Product.objects.filter(is_published=True).order_by("-id")
         for product in context_data.get('object_list'):
             product.current_version = product.versions.filter(current_version=True).first()
             # if product.current_version:

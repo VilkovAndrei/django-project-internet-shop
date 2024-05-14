@@ -7,6 +7,7 @@
         <div class="col-lg-12 col-md-6 col-sm-4">
             {% if perms.catalog.add_product %}
             <a class="btn btn-outline-primary mb-3" href="{% url 'catalog:product_create' %}">Добавить товар</a>
+            <a class="btn btn-outline-primary mb-3" href="{% url 'catalog:categories' %}">Категории товаров</a>
             {% endif %}
             <div class="row row-cols-1 row-cols-md-4 g-2">
                 {% for object in object_list %}
@@ -15,15 +16,16 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ object.name }}</h5>
                             <p class="card-text">{{ object.description|slice:":100" }}</p>
-                            <p class="card-text">Владелец: {{ object.parent.email | default:"неопределен" }}</p>
-                            {% if object.current_version %}
-                                <p class="card-text">Версия: {{ object.current_version }}</p>
-                            {% endif %}
-                            <p class="card-text">{{ object.price }} руб.</p>
+<!--                            <p class="card-text">Владелец: {{ object.parent.email | default:"неопределен" }}</p>-->
+<!--                            {% if object.current_version %}-->
+<!--                                <p class="card-text">Версия: {{ object.current_version }}</p>-->
+<!--                            {% endif %}-->
+                            <p class="card-text">Цена: {{ object.price }} руб.</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a href="{% url 'catalog:product_detail' object.pk %}"
                                        class="btn btn-sm btn-outline-primary">Просмотр</a>
+<!--                                    <p>{{ set_published_status }}</p>-->
                                     {% if object.parent == user or user.is_superuser %}
                                         <a href="{% url 'catalog:product_update' object.pk %}"
                                            class="btn btn-sm btn-outline-primary">Редактирование</a>
@@ -33,7 +35,7 @@
                                            class="btn btn-sm btn-outline-primary">Модерирование</a>
                                         {% endif %}
                                     {% endif %}
-                                    {% if user.is_superuser %}
+                                    {% if object.parent == user or user.is_superuser %}
                                     <a href="{% url 'catalog:product_delete' object.pk %}"
                                        class="btn btn-sm btn-outline-danger">Удаление</a>
                                     {% endif %}
